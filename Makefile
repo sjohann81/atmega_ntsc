@@ -21,7 +21,9 @@ PROGRAMMER = usbtiny
 #PROGRAMMER = usbasp
 #PROGRAMMER = arduino -P $(SERIAL_PROG)
 
-all: video.o gdi.o main.o
+all: main
+
+main: video.o gdi.o main.o
 	$(CC) $(CFLAGS) video.o gdi.o main.o -o code.elf
 	$(OBJCOPY) -R .eeprom -O ihex code.elf code.hex
 	$(OBJDUMP) -d code.elf > code.lst
