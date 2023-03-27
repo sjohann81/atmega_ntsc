@@ -21,15 +21,22 @@ PROGRAMMER = usbtiny
 #PROGRAMMER = usbasp
 #PROGRAMMER = arduino -P $(SERIAL_PROG)
 
-all:
-	$(CC) $(CFLAGS) -c video.c -o video.o
-	$(CC) $(CFLAGS) -c gdi.c -o gdi.o
-	$(CC) $(CFLAGS) -c main.c -o main.o
+all: video.o gdi.o main.o
 	$(CC) $(CFLAGS) video.o gdi.o main.o -o code.elf
 	$(OBJCOPY) -R .eeprom -O ihex code.elf code.hex
 	$(OBJDUMP) -d code.elf > code.lst
 	$(OBJDUMP) -h code.elf > code.sec
 	$(SIZE) code.elf
+
+main.o: main.c
+	$(CC) $(CFLAGS) -c main.c
+	
+gdi.o: gdi.c
+	$(CC) $(CFLAGS) -c gdi.c
+	
+video.o: video.c
+	$(CC) $(CFLAGS) -c video.c
+
 
 flash:
 	avrdude -C $(AVRDUDE_CONFIG) -p $(AVRDUDE_PART) -U flash:w:code.hex -y -c $(PROGRAMMER)
